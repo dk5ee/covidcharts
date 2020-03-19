@@ -23,7 +23,7 @@ def plotcountry(name, comment, da, va, de, re):
 	deaths = np.array(de)
 	recovered = np.array(re)
 	filename = "".join([c for c in name if c.isalpha() or c.isdigit() or c == ' ']).rstrip()
-# 	print(filename)
+
 	with mysheet.xkcd():
 		fig = mysheet.figure()
 		mysheet.plot(dates, values)
@@ -37,10 +37,10 @@ def plotcountry(name, comment, da, va, de, re):
 		mysheet.savefig('charts/' + filename + '_small.png', dpi=90)
 		mysheet.savefig('charts/' + filename + '_300dpi.png', dpi=300)
 		mysheet.close(fig);
-	with open('charts/' + filename + '.csv', mode='w') as csv_file:
-		csv_writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-		for item in da:
-			csv_writer.writerow([item.date(), va.pop(0), re.pop(0), de.pop(0)])
+	# with open('charts/' + filename + '.csv', mode='w') as csv_file:
+	# 	csv_writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+	# 	for item in da:
+	# 		csv_writer.writerow([item.date(), va.pop(0), re.pop(0), de.pop(0)])
 	return
 
 
