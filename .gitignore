@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+#generated files
+charts/*.png
+charts/*.csv
