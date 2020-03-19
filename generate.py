@@ -11,14 +11,6 @@ import sys
 def plotcountry(name, comment, da, va, de, re):
 	# clean up filename
 	dates = da
-	if len(va) == 0:
-		return
-	if len(da) == 0:
-		return
-	if len(de) == 0:
-		return
-	if len(re) == 0:
-		return
 	values = np.array(va)
 	deaths = np.array(de)
 	recovered = np.array(re)
@@ -48,53 +40,61 @@ regionsinfected = {}
 regionsdeath = {}
 regionsrecovered = {}
 
-deathfile = open('COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv')
-recoveredfile = open('COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv')
+deathfilename = 'COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv'
+recoveredfilename = 'COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv'
+infectedfilename = 'COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv'
 
-with open('COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv', newline='') as csvfile:
-	deathdata = csv.reader(deathfile, delimiter=',', quotechar='"')
-	next(deathdata)
-	recovereddata = csv.reader(recoveredfile, delimiter=',', quotechar='"')
-	next(recovereddata)
-	mydata = csv.reader(csvfile, delimiter=',', quotechar='"')
-	header = next(mydata)
-	header = header[4:]
-	dates = [];
-	for data in header:
-		datetimeobj = datetime.datetime.strptime(data, '%m/%d/%y')
-		dates.append (datetimeobj)
-	for row in mydata:
-		deaths = next(deathdata)
-		deaths = deaths[4:]
-		deaths = list(map(int, deaths))
-		recovered = next(recovereddata)
-		recovered = recovered[4:]
-		recovered = list(map(int, recovered))
-		state = row.pop(0)
-		region = row.pop(0).strip()
-		name = region
-		lat = row.pop(0)
-		long = row.pop(0)
-		values = list(map(int, row))
-		# TODO:
-		# aggregation of regions does not work all times
-		if state:
-			name = region + " " + state
-			if region in regionsinfected.keys():
-				olddata = regionsinfected[region]
-				oldddata = regionsdeath[region]
-				oldrdata = regionsrecovered[region]
-				newdata = [x + y for x, y in zip(values, olddata)]
-				newddata = [x + y for x, y in zip(deaths, oldddata)]
-				newrdata = [x + y for x, y in zip(recovered, oldrdata)]
-				regionsinfected[region] = newdata
-				regionsdeath[region] = newddata
-				regionsrecovered[region] = newrdata
-			else:
-				regionsinfected[region] = values
-				regionsdeath[region] = deaths
-				regionsrecovered[region] = recovered
-		plotcountry (name, "CoVid 19 cases", dates, values, deaths, recovered)
-	for region in regionsinfected.keys():
-		plotcountry (region, "CoVid 19 cases", dates, regionsinfected[region], regionsdeath[region], regionsrecovered[region])
+deathfile = open(deathfilename, newline='')
+recoveredfile = open(recoveredfilename, newline='')
+csvfile = open(infectedfilename, newline='')
 
+deathdata = csv.reader(deathfile, delimiter=',', quotechar='"')
+#drop first row, the header
+next(deathdata)
+recovereddata = csv.reader(recoveredfile, delimiter=',', quotechar='"')
+#drop first row, the header
+next(recovereddata)
+mydata = csv.reader(csvfile, delimiter=',', quotechar='"')
+header = next(mydata)
+header = header[4:]
+dates = [];
+
+for data in header:
+	datetimeobj = datetime.datetime.strptime(data, '%m/%d/%y')
+	dates.append (datetimeobj)
+for row in mydata:
+	deaths = next(deathdata)
+	deaths = deaths[4:]
+	deaths = list(map(int, deaths))
+	recovered = next(recovereddata)
+	recovered = recovered[4:]
+	recovered = list(map(int, recovered))
+	state = row.pop(0)
+	region = row.pop(0).strip()
+	name = region
+	lat = row.pop(0)
+	long = row.pop(0)
+	values = list(map(int, row))
+	# TODO:
+	# aggregation of regions does not work all times
+	if state:
+		name = region + " " + state
+		if region in regionsinfected.keys():
+			olddata = regionsinfected[region]
+			oldddata = regionsdeath[region]
+			oldrdata = regionsrecovered[region]
+			newdata = [x + y for x, y in zip(values, olddata)]
+			newddata = [x + y for x, y in zip(deaths, oldddata)]
+			newrdata = [x + y for x, y in zip(recovered, oldrdata)]
+			regionsinfected[region] = newdata
+			regionsdeath[region] = newddata
+			regionsrecovered[region] = newrdata
+		else:
+			regionsinfected[region] = values
+			regionsdeath[region] = deaths
+			regionsrecovered[region] = recovered
+	# disable plotting of countries for testing
+	#plotcountry (name, "CoVid 19 cases", dates, values, deaths, recovered)
+for region in regionsinfected.keys():
+		
+	plotcountry (region, "CoVid 19 cases", dates, regionsinfected[region], regionsdeath[region], regionsrecovered[region])
