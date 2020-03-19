@@ -12,7 +12,7 @@ def plotcountry(name, comment, da, va, de, re):
 	# clean up filename
 	dates = da
 	values = np.array(va)
-	deaths = np.array(de)
+	deceaseds = np.array(de)
 	recovered = np.array(re)
 	filename = "".join([c for c in name if c.isalpha() or c.isdigit() or c == ' ']).rstrip()
 
@@ -20,8 +20,8 @@ def plotcountry(name, comment, da, va, de, re):
 		fig = mysheet.figure()
 		mysheet.plot(dates, values)
 		mysheet.plot(dates, recovered)
-		mysheet.plot(dates, deaths)
-		mysheet.legend(['Confirmed ' + str(values[-1]), 'Recovered ' + str(recovered[-1]), 'Deceased ' + str(deaths[-1])], loc=2)
+		mysheet.plot(dates, deceaseds)
+		mysheet.legend(['Confirmed ' + str(values[-1]), 'Recovered ' + str(recovered[-1]), 'Deceased ' + str(deceaseds[-1])], loc=2)
 		mysheet.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
 		mysheet.gca().xaxis.set_major_locator(mdates.DayLocator(interval=5))
 		mysheet.gcf().autofmt_xdate()
@@ -37,64 +37,71 @@ def plotcountry(name, comment, da, va, de, re):
 
 
 regionsinfected = {}
-regionsdeath = {}
+regionsdeceased = {}
 regionsrecovered = {}
 
-deathfilename = 'COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv'
+deceasedfilename = 'COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv'
 recoveredfilename = 'COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv'
 infectedfilename = 'COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv'
 
-deathfile = open(deathfilename, newline='')
+deceasedfile = open(deceasedfilename, newline='')
 recoveredfile = open(recoveredfilename, newline='')
 csvfile = open(infectedfilename, newline='')
 
-deathdata = csv.reader(deathfile, delimiter=',', quotechar='"')
+deceaseddata = csv.reader(deceasedfile, delimiter=',', quotechar='"')
 #drop first row, the header
-next(deathdata)
+next(deceaseddata)
 recovereddata = csv.reader(recoveredfile, delimiter=',', quotechar='"')
 #drop first row, the header
 next(recovereddata)
-mydata = csv.reader(csvfile, delimiter=',', quotechar='"')
-header = next(mydata)
+
+infecteddata = csv.reader(csvfile, delimiter=',', quotechar='"')
+
+header = next(infecteddata)
 header = header[4:]
+
 dates = [];
 
+
+
 for data in header:
+	#header contains datetimes
 	datetimeobj = datetime.datetime.strptime(data, '%m/%d/%y')
 	dates.append (datetimeobj)
-for row in mydata:
-	deaths = next(deathdata)
-	deaths = deaths[4:]
-	deaths = list(map(int, deaths))
+for infected in infecteddata:
+	deceased = next(deceaseddata)
+	deceased = deceased[4:]
+	deceased = list(map(int, deceased))
 	recovered = next(recovereddata)
 	recovered = recovered[4:]
 	recovered = list(map(int, recovered))
-	state = row.pop(0)
-	region = row.pop(0).strip()
+	state = infected.pop(0)
+	region = infected.pop(0).strip()
 	name = region
-	lat = row.pop(0)
-	long = row.pop(0)
-	values = list(map(int, row))
+	lat = infected.pop(0)
+	long = infected.pop(0)
+	
+	infectedvalues = list(map(int, infected))
 	# TODO:
 	# aggregation of regions does not work all times
 	if state:
 		name = region + " " + state
 		if region in regionsinfected.keys():
 			olddata = regionsinfected[region]
-			oldddata = regionsdeath[region]
+			oldddata = regionsdeceased[region]
 			oldrdata = regionsrecovered[region]
-			newdata = [x + y for x, y in zip(values, olddata)]
-			newddata = [x + y for x, y in zip(deaths, oldddata)]
+			newdata = [x + y for x, y in zip(infectedvalues, olddata)]
+			newddata = [x + y for x, y in zip(deceased, oldddata)]
 			newrdata = [x + y for x, y in zip(recovered, oldrdata)]
 			regionsinfected[region] = newdata
-			regionsdeath[region] = newddata
+			regionsdeceased[region] = newddata
 			regionsrecovered[region] = newrdata
 		else:
-			regionsinfected[region] = values
-			regionsdeath[region] = deaths
+			regionsinfected[region] = infectedvalues
+			regionsdeceased[region] = deceased
 			regionsrecovered[region] = recovered
 	# disable plotting of countries for testing
-	#plotcountry (name, "CoVid 19 cases", dates, values, deaths, recovered)
+	#plotcountry (name, "CoVid 19 cases", dates, values, deceaseds, recovered)
 for region in regionsinfected.keys():
 		
-	plotcountry (region, "CoVid 19 cases", dates, regionsinfected[region], regionsdeath[region], regionsrecovered[region])
+	plotcountry (region, "CoVid 19 cases", dates, regionsinfected[region], regionsdeceased[region], regionsrecovered[region])
