@@ -15,7 +15,7 @@ foreach (array(
     foreach (glob('*_small.png') as $c=>$i) {
 	    echo "<h3>".($c+1).":</h3> ".
     	str_replace("_small.png","",$i)
-	    ."</h2><a href=\"$directory/".
+	    ."<a href=\"$directory/".
     	str_replace("_small","_300dpi",$i)
 	    ."\"><img src=\"$directory/$i\" alt=\"$i\"></a><br>
         <a href=\"$directory/".str_replace("_small.png",".csv",$i)."\">csvfile</a><br>\n";
