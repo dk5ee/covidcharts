@@ -131,6 +131,12 @@ dmypy.json
 #generated files
 charts/*.png
 charts/*.csv
+who/*.png
+who/*.csv
+ecdc/*.png
+ecdc/*.csv
+
+
 
 #eclipse files
 .project
