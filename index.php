@@ -11,7 +11,7 @@ foreach (array(
             'ecdc'=>'European Centre for Disease Prevention and Control')
         as $directory=>$description) {
     chdir($directory);
-    echo "<div style=\"float;left\"><h2>Data from $description</h2>\n";
+    echo "<div style=\"float:left;\"><h2>Data from $description</h2>\n";
     foreach (glob('*_small.png') as $c=>$i) {
 	    echo "<h3>".($c+1).":</h3> ".
     	str_replace("_small.png","",$i)
