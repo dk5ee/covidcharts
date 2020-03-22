@@ -13,9 +13,9 @@ foreach (array(
     chdir($directory);
     echo "<div style=\"float:left;\"><h2>Data from $description</h2>\n";
     foreach (glob('*_small.png') as $c=>$i) {
-	    echo "<h3>".($c+1).":</h3> ".
+	    echo "<h3>".
     	str_replace("_small.png","",$i)
-	    ."<a href=\"$directory/".
+	    .", data from ".$description ."</h3> <a href=\"$directory/".
     	str_replace("_small","_300dpi",$i)
 	    ."\"><img src=\"$directory/$i\" alt=\"$i\"></a><br>
         <a href=\"$directory/".str_replace("_small.png",".csv",$i)."\">csvfile</a><br>\n";
