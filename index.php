@@ -7,7 +7,8 @@ if(file_exists('lastupdate.txt')) {
 
 foreach (array(
             'charts'=>'Johns Hopkins University', 
-            'who'=>'World Health Organisation',
+//            'oldjhu'=>'Johns Hopkins University old format',
+//            'who'=>'World Health Organisation',
             'ecdc'=>'European Centre for Disease Prevention and Control')
         as $directory=>$description) {
     chdir($directory);
