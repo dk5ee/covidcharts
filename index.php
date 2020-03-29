@@ -17,10 +17,10 @@ foreach (array(
 	echo "<h3>".
     	str_replace("_small.png","",$i)
 	.", data from ".$description ."</h3> <a href=\"$directory/".
-	htmlentities(str_replace("_small","_300dpi",$i))
+	rawurlencode(str_replace("_small","_300dpi",$i))
 	."\"><img src=\"$directory/$i\" alt=\"$i\"></a><br>\n".
         "<a href=\"$directory/".
-	htmlentities(str_replace("_small.png",".csv",$i))
+	rawurlencode(str_replace("_small.png",".csv",$i))
 	."\">csvfile</a><br>\n";
     }
     echo "</div>\n";
